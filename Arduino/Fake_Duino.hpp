@@ -62,7 +62,7 @@ class SerialCommunication
 public:
     void print(String output)
     {
-        std::cerr << output << std::endl;
+        std::cerr << output << std::flush;
     }
 
     void println(String output)
@@ -73,6 +73,11 @@ public:
     bool begin(unsigned int _baudRate)
     {
         baudRate = _baudRate;
+        return true;
+    }
+
+    explicit operator bool() const
+    {
         return true;
     }
 };

@@ -38,6 +38,13 @@ public:
 class RTC_DS1307
 {
 public:
+    inline static bool canInitialise;
+
+    static void setup_mock()
+    {
+        canInitialise = true;
+    }
+
     bool begin()
     {
         return true;
