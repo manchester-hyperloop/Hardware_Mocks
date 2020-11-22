@@ -40,8 +40,6 @@ static unsigned long micros(void)
     return 1000;
 }
 
-typedef std::string String;
-
 namespace patch
 {
     template <typename T>
@@ -53,22 +51,108 @@ namespace patch
     }
 } // namespace patch
 
-#define String(X) patch::to_string(X)
+class String
+{
+    std::string str;
+
+public:
+    std::string &getString()
+    {
+        return str;
+    }
+
+    std::string::size_type length() const
+    {
+        return str.length();
+    }
+
+    template <typename T>
+    String(T param)
+    {
+        str = patch::to_string(param);
+    }
+
+    String(std::string _str)
+    {
+        str = _str;
+    }
+
+    String &replace(char find, char replace)
+    {
+        if (str.empty())
+            return *this;
+        for (std::string::size_type i = 0; i < str.size(); i++)
+        {
+            if (str[i] == find)
+                str[i] = replace;
+        }
+
+        return *this;
+    }
+
+    String &operator+=(String s)
+    {
+        str += s.getString();
+        return *this;
+    }
+
+    String operator+(String s)
+    {
+        return String(str + s.getString());
+    }
+
+    const char *c_str()
+    {
+        return str.c_str();
+    }
+};
 
 class SerialCommunication
 {
     unsigned int baudRate = 0;
 
 public:
-    void print(String output)
+    /*
+I've gotten bored of trying to make this work...
+Implemented templated empty print function
+    void print(std::string output)
     {
         std::cerr << output << std::flush;
     }
 
-    void println(String output)
+    void println(std::string output)
     {
         print(output + "\n");
     }
+
+    void print(String output)
+    {
+        std::cerr << output.getString() << std::flush;
+    }
+
+    void println(String output)
+    {
+        print(output.getString() + "/n");
+    }
+
+    template <typename T>
+    void print(T val)
+    {
+        print(patch::to_string(param));
+    }
+
+    template <typename T>
+    void println(T val)
+    {
+        print(patch::to_string(param) + "/n");
+    }
+    */
+
+    template <typename T>
+    void print(T val) {}
+
+    template <typename T>
+    void println(T val) {}
 
     bool begin(unsigned int _baudRate)
     {

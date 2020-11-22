@@ -8,6 +8,8 @@
 #ifndef mocks_rtc_mocks_RTC_Lib_Mock_hpp
 #define mocks_rtc_mocks_RTC_Lib_Mock_hpp
 
+#include <string>
+
 class DateTime
 {
 public:
@@ -38,12 +40,7 @@ public:
 class RTC_DS1307
 {
 public:
-    inline static bool canInitialise;
-
-    static void setup_mock()
-    {
-        canInitialise = true;
-    }
+    static bool canInitialise;
 
     bool begin()
     {

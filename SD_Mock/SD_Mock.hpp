@@ -9,7 +9,8 @@
 #define mocks_sd_mock_SdFat_h
 
 #include <stdint.h>
-#include <string.h>
+#include <string>
+#include "../Arduino_Mock/Arduino_Mock.hpp"
 
 #define FILE_WRITE 0
 
@@ -18,10 +19,10 @@ class File
 {
 
 public:
-    inline static bool file_is_open;
+    static bool file_is_open;
     std::string lastMessage = "";
 
-    static void setup_mock()
+    void setup_mock()
     {
         file_is_open = true;
     }
@@ -31,19 +32,19 @@ public:
         file_is_open = false;
     }
 
-    explicit operator bool() const
+    explicit operator bool()
     {
-        return file_is_open;
+        return File::file_is_open;
     }
 
-    void print(std::string message)
+    void print(String message)
     {
-        lastMessage = message;
+        lastMessage = message.getString();
     }
 
-    void println(std::string message)
+    void println(String message)
     {
-        lastMessage = message + "\n";
+        lastMessage = message.getString() + "\n";
     }
 
     void flush()
@@ -64,9 +65,9 @@ class SdFat
     int fileArgs = -1;
 
 public:
-    inline static bool canInitialise;
+    static bool canInitialise;
 
-    static void setup_mock()
+    void setup_mock()
     {
         canInitialise = true;
     }
@@ -83,9 +84,22 @@ public:
         dir_path += directory_name;
     }
 
+    void mkdir(char *directory_name)
+    {
+        dir_path += directory_name;
+    }
+
     File open(std::string _log_path, int args)
     {
         log_path = _log_path;
+        fileArgs = args;
+
+        return File();
+    }
+
+    File open(String _log_path, int args)
+    {
+        log_path = _log_path.getString();
         fileArgs = args;
 
         return File();
