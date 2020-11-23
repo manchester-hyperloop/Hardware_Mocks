@@ -1,16 +1,16 @@
 //
-//  Mode_Test_Mock.cpp
+//  Mode_Mock.hpp
 //  Hyperloop_Embedded
 //
 //  Created by Harry O'Brien on 15/10/2020.
 //  Copyright © 2020 Hyperloop Manchester. All rights reserved.
 //
 
-#ifndef mocks_Mode_Mode_Test_Mock_hpp
-#define mocks_Mode_Mode_Test_Mock_hpp
+#ifndef mocks_Mode_Mode_Mock_hpp
+#define mocks_Mode_Mode_Mock_hpp
 
-#include "Core/Mode/Mode.hpp"
-#include "Core/SystemController.hpp"
+#include "../../include/Core/Mode/Mode.hpp"
+#include "../../include/Core/SystemController.hpp"
 
 namespace Core
 {
@@ -40,8 +40,9 @@ namespace Core
 
             bool init()
             {
-                initialised = true;
-                return true;
+                // only initialise if allowed
+                initialised = (mayInitialise ? true : false);
+                return initialised;
             }
 
             bool run()
@@ -51,7 +52,7 @@ namespace Core
             }
 
             /**
-             * Gets the name of the mode as a string
+             * Gets the name of the mode
              */
             ModeType type()
             {
@@ -77,8 +78,10 @@ namespace Core
             {
                 sysCtrl->shouldTransitionToMode(ModeType::TEST);
             }
+
+            static bool mayInitialise;
         };
     } // namespace Mode
 } // namespace Core
 
-#endif /* mocks_Mode_Mode_Test_Mock_hpp */
+#endif /* mocks_Mode_Mode_Mock_hpp */
