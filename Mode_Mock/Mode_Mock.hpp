@@ -21,7 +21,6 @@ namespace Core
          */
         class ModeTest : public Mode
         {
-            bool initialised;
             int timesExecuted;
 
         public:
@@ -29,7 +28,6 @@ namespace Core
              * Defines the behaviour of the system when in Test
              */
             ModeTest(Core::SystemController *sysCtrl) : Mode(sysCtrl),
-                                                        initialised(false),
                                                         timesExecuted(0)
             {
             }
@@ -47,6 +45,8 @@ namespace Core
 
             bool run()
             {
+                Mode::run();
+
                 timesExecuted++;
                 return true;
             }
