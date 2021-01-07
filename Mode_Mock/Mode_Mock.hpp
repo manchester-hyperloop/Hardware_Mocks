@@ -22,6 +22,7 @@ namespace Core
         class ModeTest : public Mode
         {
             int timesExecuted;
+            bool initialised;
 
         public:
             /**
@@ -45,8 +46,6 @@ namespace Core
 
             bool run()
             {
-                Mode::run();
-
                 timesExecuted++;
                 return true;
             }
