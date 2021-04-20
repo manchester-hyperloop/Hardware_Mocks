@@ -9,6 +9,11 @@
 #ifndef mocks_Mode_Mode_Mock_hpp
 #define mocks_Mode_Mode_Mock_hpp
 
+// NOTE(mikolaj): this define is here to allow intellisense to see the XXX_TEST
+// values for statemasks and ids (they are compiled conditionally). it should
+// be commented out for running tests to avoid a redefinition warning
+//#define UNIT_TEST
+
 #include "../../include/Core/Mode/Mode.hpp"
 #include "../../include/Core/SystemController.hpp"
 
@@ -28,59 +33,53 @@ namespace Core
             /**
              * Defines the behaviour of the system when in Test
              */
-            ModeTest(Core::SystemController *sysCtrl) : Mode(sysCtrl),
-                                                        timesExecuted(0)
+            ModeTest() : timesExecuted(0)
             {
             }
 
-            ~ModeTest()
-            {
-            }
-
-            bool init()
+            void setup(Core::SystemController *state) override
             {
                 // only initialise if allowed
-                initialised = (mayInitialise ? true : false);
-                return initialised;
+                initialised = mayInitialise;
             }
 
-            bool run()
+            MODE_ID tick(SystemController *state) override
             {
+                if (!initialised)
+                    return MODE_ID_PANIC;
+
                 timesExecuted++;
-                return true;
+                return MODE_FINALISE;
             }
 
-            /**
-             * Gets the name of the mode
-             */
-            ModeType type()
+            void teardown(Core::SystemController *state) override
             {
-                return ModeType::TEST;
+
             }
 
-            bool wasInitialised()
+            statemask_t get_statemask() const override
+            {
+                return MODE_STATEMASK_TEST;
+            }
+
+            bool wasInitialised() const
             {
                 return initialised;
             }
 
-            bool wasExecuted()
+            bool wasExecuted() const
             {
                 return timesExecuted > 0;
             }
 
-            int getTimesExecuted()
+            int getTimesExecuted() const
             {
                 return timesExecuted;
             }
 
-            void transitionToNextTestMock()
-            {
-                sysCtrl->shouldTransitionToMode(ModeType::TEST);
-            }
-
             static bool mayInitialise;
         };
-    } // namespace Mode
-} // namespace Core
+    }
+}
 
 #endif /* mocks_Mode_Mode_Mock_hpp */
